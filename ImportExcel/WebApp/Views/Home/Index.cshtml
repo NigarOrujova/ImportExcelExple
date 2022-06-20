@@ -1,0 +1,145 @@
+﻿@model Paginate<Countries>
+@{
+    ViewData["Title"] = "Home Page";
+    int count = ((Model.CurrentPage - 1) * 10) + 1;
+}
+
+
+<div style="margin-top:30px;" id="myCarousel" class="carousel slide" data-ride="carousel" data-interval="6000">
+    <div class="container ">
+        <form method="post" asp-controller="Home" asp-action="Import" enctype="multipart/form-data">
+            <input type="file" name="file" />
+            <button type="submit" class="btn btn-outline-success">Import from Excel</button>
+        </form>
+
+        <div class="content-page">
+            <div class="content">
+
+                <!-- Start Content-->
+                <div class="container-fluid">
+
+                    <div class="row">
+                        <div class="col-12">
+                                <div class="card-body table-responsive">
+                                    <table id="datatable-buttons" class="table table-striped table-bordered dt-responsive nowrap" style="border-collapse: collapse; border-spacing: 0; width: 100%;">
+
+                                        <thead>
+                                            <tr>
+                                                <th>№</th>
+                                                <th>Ad</th>
+                                                <th>Şəkil</th>
+                                                <th>Məzmun</th>
+                                            </tr>
+                                        </thead>
+
+                                        <tbody>
+                                            @foreach (var countries in Model.Items)
+                                            {
+                                                <tr>
+                                                    <td>@count</td>
+                                                    <td>@countries.CountryName</td>
+                                                    <td>@countries.TwoCharCountryCode</td>
+                                                    <td>@countries.ThreeCharCountryCode</td>
+
+                                                </tr>
+
+                                                count++;
+                                            }
+                                        </tbody>
+                                    </table>
+                                </div>
+                                @if (@Model.AllPageCount > 1)
+                                {
+                                    <div class="col-12 d-flex justify-content-center">
+                                        <nav aria-label="Page navigation example">
+                                            <ul class="pagination justify-content-end">
+                                                @{
+                                                    if (Model.CurrentPage < 1)
+                                                    {
+                                                        Model.CurrentPage = 1;
+                                                    }
+
+                                                    int PageLeft = 3;
+                                                    int PagesRight = 3;
+
+                                                    var fromPage = Math.Max(1, Model.CurrentPage - PageLeft);
+                                                    var toPage = Math.Min(Model.AllPageCount, Model.CurrentPage + PagesRight);
+
+                                                    if (Model.AllPageCount == toPage)
+                                                    {
+                                                        toPage = Model.AllPageCount;
+                                                    }
+
+                                                    if (Model.CurrentPage > 1)
+                                                    {
+                                                        <li class="page-item">
+                                                            <a class="page-link" asp-route-page="@(Model.CurrentPage - 1)">
+                                                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-arrow-left" viewBox="0 0 16 16">
+                                                                    <path fill-rule="evenodd" d="M15 8a.5.5 0 0 0-.5-.5H2.707l3.147-3.146a.5.5 0 1 0-.708-.708l-4 4a.5.5 0 0 0 0 .708l4 4a.5.5 0 0 0 .708-.708L2.707 8.5H14.5A.5.5 0 0 0 15 8z" />
+                                                                </svg>
+                                                            </a>
+                                                        </li>
+                                                        if (Model.CurrentPage - 1 > 1)
+                                                        {
+                                                            <li class="page-item">
+                                                                <a class="page-link" asp-route-page="1">1</a>
+                                                            </li>
+                                                        }
+                                                    }
+
+                                                    if (fromPage - 1 > 1)
+                                                    {
+                                                        <li>
+                                                            <a class="page-link" asp-route-page="@Model.CurrentPage">...</a>
+                                                        </li>
+                                                    }
+
+                                                    for (var i = fromPage; i <= toPage; i++)
+                                                    {
+                                                        <li class="page-item @(Model.CurrentPage == i ? "active" : "")">
+                                                            <a class="page-link" asp-route-page="@i">@i</a>
+                                                        </li>
+                                                    }
+                                                    if (toPage < Model.AllPageCount - 1)
+                                                    {
+                                                        <li>
+                                                            <a class="page-link" asp-route-page="@Model.CurrentPage">...</a>
+                                                        </li>
+                                                    }
+                                                    if (Model.AllPageCount > Model.CurrentPage)
+                                                    {
+                                                        if (Model.AllPageCount > Model.CurrentPage + 1)
+                                                        {
+                                                            <li class="page-item">
+                                                                <a class="page-link" asp-route-page="@(Model.AllPageCount)">@Model.AllPageCount</a>
+                                                            </li>
+                                                        }
+                                                        <li class="page-item">
+                                                            <a class="page-link" asp-route-page="@(Model.CurrentPage + 1)">
+                                                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-arrow-right" viewBox="0 0 16 16">
+                                                                    <path fill-rule="evenodd" d="M1 8a.5.5 0 0 1 .5-.5h11.793l-3.147-3.146a.5.5 0 0 1 .708-.708l4 4a.5.5 0 0 1 0 .708l-4 4a.5.5 0 0 1-.708-.708L13.293 8.5H1.5A.5.5 0 0 1 1 8z" />
+                                                                </svg>
+                                                            </a>
+                                                        </li>
+                                                    }
+                                                }
+                                            </ul>
+                                        </nav>
+                                    </div>
+                                }
+                        </div>
+                    </div>
+
+                </div>
+                <!-- end container-fluid -->
+
+            </div>
+            <!-- end content -->
+
+        </div>
+
+        <!-- ============================================================== -->
+        <!-- End Page content -->
+        <!-- ============================================================== -->
+    </div>
+</div>
