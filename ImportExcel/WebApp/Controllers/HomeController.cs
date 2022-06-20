@@ -65,34 +65,13 @@ namespace WebApp.Controllers
                             ThreeCharCountryCode = worksheet.Cells[row, 4].Value== null ? string.Empty : worksheet.Cells[row, 4].Value.ToString().Trim()
                         };
                         if (await _context.Countries.AnyAsync(
-                        p => p.CountryName == "tr" &&
+                        p => p.CountryName == countries.ThreeCharCountryCode &&
                         p.ThreeCharCountryCode == countries.ThreeCharCountryCode &&
                         p.TwoCharCountryCode == countries.TwoCharCountryCode))
                         {
                             continue;
                         }
-                        if (await _context.Cities.AnyAsync(
-                        p => p.CountryName == "tr" &&
-                        p.ThreeCharCountryCode == countries.ThreeCharCountryCode &&
-                        p.TwoCharCountryCode == countries.TwoCharCountryCode))
-                        {
-                            continue;
-                        }
-                        if (countries.CountryName != "tr")
-                        {
-                            await _context.Countries.AddAsync(countries);
-                        }
-                        else{
-
-                            City city = new City()
-                            {
-                                Id=countries.Id,
-                                CountryName=countries.CountryName,
-                                TwoCharCountryCode=countries.TwoCharCountryCode,
-                                ThreeCharCountryCode=countries.ThreeCharCountryCode
-                            };
-                            await _context.Cities.AddAsync(city);
-                        }
+                        await _context.Countries.AddAsync(countries);
                     }
                 }
                  await _context.SaveChangesAsync();
